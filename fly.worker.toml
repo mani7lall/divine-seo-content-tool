@@ -1,0 +1,10 @@
+# fly.toml for Worker service (template)
+app = "divine-seo-content-tool-worker"
+primary_region = "iad"
+
+[build]
+  dockerfile = "Dockerfile.worker"
+
+[processes]
+  worker = "celery -A seoworkbench.tasks.celery_app worker --loglevel=INFO"
+

@@ -1,0 +1,56 @@
+version: '3.9'
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile.api
+    env_file: .env
+    environment:
+      - POSTGRES_DSN=${POSTGRES_DSN}
+      - REDIS_URL=${REDIS_URL}
+      - NEXT_PUBLIC_API_BASE_URL=http://localhost:8000
+    ports:
+      - "8000:8000"
+    depends_on:
+      - redis
+      - postgres
+    restart: unless-stopped
+
+  worker:
+    build:
+      context: .
+      dockerfile: Dockerfile.worker
+    env_file: .env
+    environment:
+      - POSTGRES_DSN=${POSTGRES_DSN}
+      - REDIS_URL=${REDIS_URL}
+    depends_on:
+      - redis
+      - postgres
+    restart: unless-stopped
+
+  web:
+    build:
+      context: ./dashboard
+      dockerfile: Dockerfile.web
+    environment:
+      - NEXT_PUBLIC_API_BASE_URL=http://localhost:8000
+    ports:
+      - "3000:3000"
+    depends_on:
+      - api
+
+  redis:
+    image: redis:7
+    ports:
+      - "6379:6379"
+
+  postgres:
+    image: postgres:16
+    environment:
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=seo
+    ports:
+      - "5432:5432"
+
