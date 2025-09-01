@@ -6,7 +6,7 @@ from typing import Generator, Optional
 from sqlalchemy import create_engine
 from sqlalchemy.orm import declarative_base, sessionmaker, Session
 
-from .config import get_settings
+from ..config import get_settings
 
 Base = declarative_base()
 
