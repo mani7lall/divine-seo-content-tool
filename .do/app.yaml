@@ -1,0 +1,38 @@
+name: divine-seo-tool
+region: nyc
+services:
+  - name: backend
+    github:
+      repo: mani7lall/divine-seo-content-tool
+      branch: main
+      deploy_on_push: true
+    source_dir: /
+    dockerfile_path: Dockerfile  # We'll create this
+    instance_size_slug: basic-xxs
+    instance_count: 1
+    routes:
+      - path: /api
+    envs:
+      - key: DATABASE_URL
+        value: ${db.DATABASE_URL}
+      - key: OPENAI_API_KEY
+        type: SECRET
+        value: ""  # We'll set this later
+
+  - name: frontend
+    github:
+      repo: mani7lall/divine-seo-content-tool
+      branch: main
+      deploy_on_push: true
+    source_dir: dashboard
+    dockerfile_path: Dockerfile.frontend  # We'll create this
+    instance_size_slug: basic-xxs
+    instance_count: 1
+    routes:
+      - path: /
+
+databases:
+  - engine: PG
+    name: db
+    version: "15"
+    size: db-s-dev-database
